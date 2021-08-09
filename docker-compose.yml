@@ -1,0 +1,15 @@
+version: "3.9"
+   
+services:
+  db:
+    image: postgres
+    volumes:
+      - ./docker/create-db.sql:/docker-entrypoint-initdb.d/create-db.sql
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "${PGPORT}:5432"
+    expose:  
+      -  "5432"

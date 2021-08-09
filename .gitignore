@@ -9,6 +9,9 @@ lerna-debug.log*
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
+# postgresql data
+docker/data
+
 # Runtime data
 pids
 *.pid
@@ -35,6 +38,7 @@ bower_components
 .lock-wscript
 
 # Compiled binary addons (https://nodejs.org/api/addons.html)
+build
 build/Release
 
 # Dependency directories
@@ -68,10 +72,6 @@ typings/
 # Yarn Integrity file
 .yarn-integrity
 
-# dotenv environment variables file
-.env
-.env.test
-
 # parcel-bundler cache (https://parceljs.org/)
 .cache
 
@@ -102,3 +102,17 @@ dist
 
 # TernJS port file
 .tern-port
+
+# never ignore
+!/.gitignore
+!/.npmignore
+!/.nycrc
+!/.travis.yml
+!/.codecov.yml
+!.eslintrc.js
+!.prettierrc.js
+
+.vscode
+.metals
+
+commonjs
