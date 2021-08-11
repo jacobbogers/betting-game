@@ -28,5 +28,7 @@ docker-compose up
 run the graphql server
 
 ```bash
-npm run start ## you have done 'npm install' and 'npm run build' in previous step
+npm install
+npm run build
+npm run start
 ```
