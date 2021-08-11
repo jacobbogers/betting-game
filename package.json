@@ -25,6 +25,7 @@
     "build": "ttsc",
     "lint": "eslint src/**/*.ts",
     "lint:fix": "eslint . --fix",
+    "prestart": "npm run build",
     "start": "node commonjs/server/index.js"
   },
   "contributes": {

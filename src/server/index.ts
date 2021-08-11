@@ -96,12 +96,16 @@ const resolvers: Resolvers = {
 
                     const HOUSE_EDGE = 0.15;
                     const multiplication = (1-chance)/chance * (1 - HOUSE_EDGE);
-                    const payout = betAmount*multiplication;
+                    const payout = parseFloat((betAmount*multiplication).toFixed(2))
 
                     // roll the dice
                     const playerWins = Math.random() < chance;
 
-                    await UserTable.update({ balance: playerWins ? user.balance + payout : user.balance - betAmount }, {
+                    const newBalance = parseFloat(
+                        (playerWins ? user.balance + payout : user.balance - betAmount).toFixed(2)
+                    );
+
+                    await UserTable.update({ balance: newBalance }, {
                          where: {
                             id: userId
                          },

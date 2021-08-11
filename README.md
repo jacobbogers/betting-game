@@ -8,10 +8,9 @@ This demo runs a dockerized postgresql db
 
 Both postgresql aswell as the betting app use the contents of the `.env` file
 
-
 ```bash
 # contents of .env
-PG_PORT=5432      #mapped external port of the dockerized postgresql 
+PG_PORT=6666      #mapped external port of the dockerized postgresql 
 PG_HOST=localhost  #external host of the dockerized postgresql
 GRAPHQL_PORT=4040  # graphql listen port, navigate to http://localhost:4040/
 ```
@@ -29,6 +28,5 @@ run the graphql server
 
 ```bash
 npm install
-npm run build
 npm run start
 ```
