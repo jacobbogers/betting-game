@@ -11,6 +11,20 @@ type ApolloContext = {
     BetTable: BetDef
 }
 
+// could not rename UserId to "userId" in sequelize, (yes tried "foreignKey")
+// in the database correct column and foreign key constraint are created but sequelize keeps
+// working with "UserId" internally instead of "userId"
+function betDBRecordToGraphQLType(dbBetRecord: BetAttributes) {
+    return {
+        id: dbBetRecord.id,
+        userId: dbBetRecord.UserId,
+        betAmount: dbBetRecord.betAmount,
+        chance: dbBetRecord.chance,
+        payout: dbBetRecord.payout,
+        win: dbBetRecord.win
+    };
+}
+
 type Resolvers = Pick<ApolloServerExpressConfig, 'resolvers'>;
 
 export const resolvers: Resolvers = {
@@ -59,7 +73,7 @@ export const resolvers: Resolvers = {
                     // (1) betAmount*(chance house wins) - (chance house loses)*payout > 0
                     // (2) payout < betAmount(chance house wins)/(chance house loses)
                     // (3) break even if payout = betAmount*(1-p)/p, 
-                    // (4) factor (1-p)/p is now (1-p*(1-HOUSE_EDGE))/p
+                    // (4) payout = betAmount*(1-p)/p*(1-HOUSE_EDGE)
 
                     const HOUSE_EDGE = 0.15;
                     const multiplication = (1-chance)/chance * (1 - HOUSE_EDGE);
@@ -86,14 +100,7 @@ export const resolvers: Resolvers = {
                                win: playerWins
                            }, { transaction: t}) as unknown as BetAttributes;
                     await t.commit();
-                    return {
-                        id: newBet.id,
-                        userId: newBet.UserId,
-                        betAmount: newBet.betAmount,
-                        chance: newBet.chance,
-                        payout: newBet.payout,
-                        win: newBet.win
-                    };      
+                    return betDBRecordToGraphQLType(newBet);
                 }
                 catch(err){
                    await t.rollback();
@@ -117,16 +124,13 @@ export const resolvers: Resolvers = {
                     // could not rename UserId to "userId" in sequelize, (yes tried "foreignKey")
                     // in the database correct column and foreign key constraint are created but sequelize keeps
                     // working with "UserId" internally instead of "userId"
-                    return {
-                        id: record.id,
-                        userId: record.UserId,
-                        betAmount: record.betAmount,
-                        chance: record.chance,
-                        payout: record.payout,
-                        win: record.win
-                    };
+                    return betDBRecordToGraphQLType(record);
                 }
                 return null;
+            },
+            async getBetList(root, args, { BetTable }: ApolloContext){
+                const allBets = await await BetTable.findAll() as unknown as BetAttributes[];
+                return allBets.map(betDBRecordToGraphQLType);
             },
             async getBestBetPerUser(root, args: { limit?: number }, { BetTable }: ApolloContext) {
                 const { limit } = args;
@@ -139,23 +143,14 @@ export const resolvers: Resolvers = {
                 console.log(sql);
                 const records = await BetTable.sequelize?.query(sql, {
                     type: QueryTypes.SELECT
-                }) as (BetAttributes & { createdAt?: Date, updatedAt?: Date, UserId: number })[];
+                }) as BetAttributes[];
                 if (records === null || records === undefined || !Array.isArray(records)) {
                     return null;
                 }
                 // could not rename UserId to "userId" in sequelize, (yes tried "foreignKey")
                 // in the database correct column and foreign key constraint are created but sequelize keeps
                 // working with "UserId" internally instead of "userId"
-                return records.map(record => {
-                    return {
-                        id: record.id,
-                        userId: record.UserId,
-                        betAmount: record.betAmount,
-                        chance: record.chance,
-                        payout: record.payout,
-                        win: record.win
-                    };
-                });
+                return records.map(betDBRecordToGraphQLType);
             }
         }
     }

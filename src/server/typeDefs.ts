@@ -20,6 +20,7 @@ export const typeDefs = gql`
     getUser(id: Int!): User
     getUserList: [User!]
     getBet(id: Int!): Bet
+    getBetList: [Bet!]
     getBestBetPerUser(limit: Int): [Bet!]
   }
 
