@@ -43,8 +43,6 @@
     "sequelize": "^6.6.5"
   },
   "devDependencies": {
-    "@types/dotenv": "^8.2.0",
-    "@types/graphql": "^14.5.0",
     "@types/node": "^16.4.13",
     "@types/validator": "^13.6.3",
     "@typescript-eslint/eslint-plugin": "^4.29.0",
