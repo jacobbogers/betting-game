@@ -10,6 +10,6 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     ports:
-      - "${PG_PORT}:5432"
+      - "5432:${PG_PORT}"
     expose:  
       -  "5432"

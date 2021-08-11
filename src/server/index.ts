@@ -95,12 +95,11 @@ const resolvers: Resolvers = {
                     // (4) factor (1-p)/p is now (1-p*(1-HOUSE_EDGE))/p
 
                     const HOUSE_EDGE = 0.15;
-                    const chancePlayerWins = chance*(1-HOUSE_EDGE);
-                    const multiplication = (1-chancePlayerWins)/chance;
+                    const multiplication = (1-chance)/chance * (1 - HOUSE_EDGE);
                     const payout = betAmount*multiplication;
 
                     // roll the dice
-                    const playerWins = Math.random() < chancePlayerWins;
+                    const playerWins = Math.random() < chance;
 
                     await UserTable.update({ balance: playerWins ? user.balance + payout : user.balance - betAmount }, {
                          where: {
@@ -111,7 +110,7 @@ const resolvers: Resolvers = {
                     const newBet = await BetTable.create({
                                UserId:userId,
                                betAmount: betAmount,
-                               chance: chancePlayerWins,
+                               chance,
                                payout,
                                win: playerWins
                            }, { transaction: t}) as unknown as BetAttributes;
